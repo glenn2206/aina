@@ -1,0 +1,111 @@
+---
+/**
+ * ProductCard — Kartu produk ANIA (dari Figma node 137:1006 "Most Popular").
+ *
+ * Struktur per kartu (lebar 320px):
+ *   - Gambar 320x406, rounded 8, badge "Sale"/"Sold Out" kiri-atas
+ *   - Description (gap 12, rata tengah):
+ *       - Pill kategori (border #EAE8E8, teks hitam, Open Sans 12)
+ *       - Judul Crimson Text 20 #1E2934
+ *       - Harga Open Sans 12 #1E2934 (+ harga coret #B5B1AF jika promo)
+ *       - Pemilih varian Standard/Premium (thumbnail 38x38 + label)
+ */
+import { Image } from 'astro:assets';
+
+interface Props {
+	image: ImageMetadata;
+	alt?: string;
+	category: string;
+	title: string;
+	price: string;
+	priceOld?: string;
+	badge?: 'Sale' | 'Sold Out';
+	standardThumb?: ImageMetadata;
+	premiumThumb?: ImageMetadata;
+}
+
+const {
+	image,
+	alt = '',
+	category,
+	title,
+	price,
+	priceOld,
+	badge,
+	standardThumb,
+	premiumThumb,
+} = Astro.props;
+
+const hasVariant = Boolean(standardThumb && premiumThumb);
+---
+
+<div class="flex flex-col gap-3">
+	<!-- Gambar + badge -->
+	<div class="relative overflow-hidden rounded-lg bg-white">
+		<Image
+			src={image}
+			alt={alt || title}
+			class="aspect-[320/406] w-full object-cover"
+			width={640}
+			height={812}
+			sizes="(min-width: 1280px) 320px, (min-width: 640px) 50vw, 100vw"
+			loading="lazy"
+		/>
+		{badge && (
+			<span
+				class="absolute left-4 top-4 rounded-full border border-[#6D6D6D] bg-white px-4 py-1 text-xs font-normal leading-5 text-[#6D6D6D]"
+			>
+				{badge}
+			</span>
+		)}
+	</div>
+
+	<!-- Deskripsi -->
+	<div class="flex flex-col items-center gap-3">
+		<span class="rounded-full border border-[#EAE8E8] px-4 py-1 text-xs font-normal text-black">
+			{category}
+		</span>
+
+		<div class="flex flex-col items-center gap-1">
+			<h3 class="text-center font-['Crimson_Text'] text-xl font-normal text-[#1E2934]">{title}</h3>
+			<p class="text-xs font-normal text-[#1E2934]">
+				{priceOld && <span class="mr-1 text-[#B5B1AF] line-through">{priceOld}</span>}
+				<span>{price}</span>
+			</p>
+		</div>
+
+		{hasVariant && (
+			<div class="mt-1 flex items-start gap-4">
+				<button type="button" class="group flex w-[46px] cursor-pointer flex-col items-center gap-1 border-0 bg-transparent p-0">
+					<span class="relative flex h-[38px] w-[38px] items-center justify-center rounded-full border border-black">
+						{standardThumb && (
+							<Image
+								src={standardThumb}
+								alt=""
+								width={32}
+								height={32}
+								class="h-8 w-8 rounded-full object-cover"
+							/>
+						)}
+					</span>
+					<span class="text-[10px] font-bold text-[#1E2934]">Standard</span>
+				</button>
+
+				<button type="button" class="group flex w-[46px] cursor-pointer flex-col items-center gap-1 border-0 bg-transparent p-0">
+					<span class="relative flex h-[38px] w-[38px] items-center justify-center rounded-full border border-black">
+						{premiumThumb && (
+							<Image
+								src={premiumThumb}
+								alt=""
+								width={32}
+								height={32}
+								class="h-8 w-8 rounded-full object-cover opacity-50"
+							/>
+						)}
+					</span>
+					<span class="text-[10px] font-normal text-[#6D6D6D]">Premium</span>
+				</button>
+			</div>
+		)}
+	</div>
+</div>

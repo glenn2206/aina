@@ -1,0 +1,134 @@
+---
+/**
+ * MostPopular — Section "Most Popular" (bg #FDF6F1).
+ *
+ * Mengikuti Figma node 137:1006:
+ *   - Heading Crimson Text 32 #3D3B2F "Flowers They'll Never Forget"
+ *   - Deskripsi Open Sans 14 #525252
+ *   - 8 kartu produk (2 baris × 4)
+ *   - CTA "View All Product" (olive #899B7A)
+ *   - Garis pemisah #CCC8A8 di bawah
+ */
+import ProductCard from './ProductCard.astro';
+import productHandful from '../../assets/figma/product-handful.png';
+import productBlush from '../../assets/figma/product-blush.png';
+import productSunshine from '../../assets/figma/product-sunshine.png';
+import productLove from '../../assets/figma/product-love.png';
+import productVibrant from '../../assets/figma/product-vibrant.png';
+import productRoseAllure from '../../assets/figma/product-roseallure.png';
+import productEternal from '../../assets/figma/product-eternal.png';
+import productVase from '../../assets/figma/product-vase.png';
+import thumbBlush from '../../assets/figma/thumb-blush.png';
+import thumbSunshine from '../../assets/figma/thumb-sunshine.png';
+import thumbLove from '../../assets/figma/thumb-love.png';
+import thumbLove2 from '../../assets/figma/thumb-love2.png';
+import thumbRoseAllure from '../../assets/figma/thumb-roseallure.png';
+import thumbPetal from '../../assets/figma/thumb-petal.png';
+
+const products = [
+	{
+		image: productHandful,
+		alt: 'A Handful Flower Box — kotak bunga segar ANIA',
+		category: 'Bloom Box',
+		title: 'A Handful Flower Box',
+		price: 'Rp 700,000',
+		priceOld: 'Rp 950,000',
+		badge: 'Sale',
+		standardThumb: productHandful,
+		premiumThumb: thumbBlush,
+	},
+	{
+		image: productBlush,
+		alt: 'Blush Amethyst Orchestra — premium wrapped ANIA',
+		category: 'Premium Wrapped',
+		title: 'Blush Amethyst Orchestra',
+		price: 'Rp 1,250,000',
+		standardThumb: productBlush,
+		premiumThumb: thumbSunshine,
+	},
+	{
+		image: productSunshine,
+		alt: 'Hello Sunshine — premium wrapped ANIA',
+		category: 'Premium Wrapped',
+		title: 'Hello Sunshine',
+		price: 'Rp 1,000,000',
+		badge: 'Sold Out',
+		standardThumb: productSunshine,
+		premiumThumb: thumbLove,
+	},
+	{
+		image: productLove,
+		alt: 'Love Symphony — premium wrapped ANIA',
+		category: 'Premium Wrapped',
+		title: 'Love Symphony',
+		price: 'Rp 950,000',
+		badge: 'Sale',
+		standardThumb: productLove,
+		premiumThumb: thumbLove2,
+	},
+	{
+		image: productVibrant,
+		alt: 'Vibrant Longevity — rangkaian vas ANIA',
+		category: 'Vase',
+		title: 'Vibrant Longevity',
+		price: 'Rp 1,950,000',
+	},
+	{
+		image: productRoseAllure,
+		alt: 'Rose Allure — preserved flower ANIA',
+		category: 'Preserved Flower',
+		title: 'Rose Allure',
+		price: 'Rp 1,250,000',
+		standardThumb: productRoseAllure,
+		premiumThumb: thumbRoseAllure,
+	},
+	{
+		image: productEternal,
+		alt: 'Eternal Grace — standing flower ANIA',
+		category: 'Standing Flower',
+		title: 'Eternal Grace',
+		price: 'Rp 2,050,000',
+		badge: 'Sold Out',
+	},
+	{
+		image: productVase,
+		alt: 'Vase Ceramic Premium Neck Motif — aksesoris ANIA',
+		category: 'Accessories',
+		title: 'Vase Ceramic Premium Neck Motif',
+		price: 'Rp 350,000',
+		standardThumb: thumbPetal,
+		premiumThumb: thumbPetal,
+	},
+];
+---
+
+<section class="bg-[#FDF6F1] py-[50px] lg:py-[70px]">
+	<div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-[70px]">
+		<!-- Heading -->
+		<h2 class="text-center font-['Crimson_Text'] text-3xl font-normal text-[#3D3B2F] lg:text-[32px]">
+			Flowers They'll Never Forget
+		</h2>
+		<p class="mx-auto mt-4 max-w-[657px] text-center text-sm font-normal leading-relaxed text-[#525252]">
+			Our most-loved flower arrangements — beautiful choices that never fail to impress someone special.
+		</p>
+
+		<!-- Grid produk -->
+		<div class="mt-12 grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
+			{products.map((p) => (
+				<ProductCard {...p} />
+			))}
+		</div>
+
+		<!-- CTA -->
+		<div class="mt-14 flex justify-center">
+			<a
+				href="/products"
+				class="flex h-9 items-center justify-center rounded-lg bg-[#899B7A] px-[18px] text-xs font-semibold uppercase tracking-[0.5px] text-[#FDF6F1] transition-colors duration-200 hover:bg-[#7a8c6b]"
+			>
+				View All Product
+			</a>
+		</div>
+	</div>
+
+	<div class="mt-14 h-px w-full bg-[#CCC8A8] lg:mt-16"></div>
+</section>
