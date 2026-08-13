@@ -22,6 +22,8 @@ interface Props {
 	badge?: 'Sale' | 'Sold Out';
 	standardThumb?: ImageMetadata;
 	premiumThumb?: ImageMetadata;
+	/** Slug produk → kartu menjadi link ke /details/{slug} */
+	slug?: string;
 }
 
 const {
@@ -34,18 +36,24 @@ const {
 	badge,
 	standardThumb,
 	premiumThumb,
+	slug,
 } = Astro.props;
 
 const hasVariant = Boolean(standardThumb && premiumThumb);
+const href = slug ? `/details/${slug}` : null;
 ---
 
 <div class="flex flex-col gap-3">
-	<!-- Gambar + badge -->
-	<div class="relative overflow-hidden rounded-lg bg-white">
+	<!-- Gambar + badge (link ke detail) -->
+	<a
+		href={href}
+		class="group relative block overflow-hidden rounded-lg bg-white"
+		aria-label={alt || title}
+	>
 		<Image
 			src={image}
 			alt={alt || title}
-			class="aspect-[320/406] w-full object-cover"
+			class="aspect-[320/406] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
 			width={640}
 			height={812}
 			sizes="(min-width: 1280px) 320px, (min-width: 640px) 50vw, 100vw"
@@ -58,21 +66,40 @@ const hasVariant = Boolean(standardThumb && premiumThumb);
 				{badge}
 			</span>
 		)}
-	</div>
+	</a>
 
 	<!-- Deskripsi -->
 	<div class="flex flex-col items-center gap-3">
-		<span class="rounded-full border border-[#EAE8E8] px-4 py-1 text-xs font-normal text-black">
-			{category}
-		</span>
+		{href ? (
+			<a
+				href={href}
+				class="rounded-full border border-[#EAE8E8] px-4 py-1 text-xs font-normal text-black transition-colors duration-200 hover:border-[#899B7A] hover:text-[#4C5F45]"
+			>
+				{category}
+			</a>
+		) : (
+			<span class="rounded-full border border-[#EAE8E8] px-4 py-1 text-xs font-normal text-black">
+				{category}
+			</span>
+		)}
 
-		<div class="flex flex-col items-center gap-1">
-			<h3 class="text-center font-['Crimson_Text'] text-xl font-normal text-[#1E2934]">{title}</h3>
-			<p class="text-xs font-normal text-[#1E2934]">
-				{priceOld && <span class="mr-1 text-[#B5B1AF] line-through">{priceOld}</span>}
-				<span>{price}</span>
-			</p>
-		</div>
+		{href ? (
+			<a href={href} class="flex flex-col items-center gap-1 transition-opacity duration-200 hover:opacity-80">
+				<h3 class="text-center font-['Crimson_Text'] text-xl font-normal text-[#1E2934]">{title}</h3>
+				<p class="text-xs font-normal text-[#1E2934]">
+					{priceOld && <span class="mr-1 text-[#B5B1AF] line-through">{priceOld}</span>}
+					<span>{price}</span>
+				</p>
+			</a>
+		) : (
+			<div class="flex flex-col items-center gap-1">
+				<h3 class="text-center font-['Crimson_Text'] text-xl font-normal text-[#1E2934]">{title}</h3>
+				<p class="text-xs font-normal text-[#1E2934]">
+					{priceOld && <span class="mr-1 text-[#B5B1AF] line-through">{priceOld}</span>}
+					<span>{price}</span>
+				</p>
+			</div>
+		)}
 
 		{hasVariant && (
 			<div class="mt-1 flex items-start gap-4">

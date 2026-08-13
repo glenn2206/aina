@@ -10,96 +10,21 @@
  *   - Garis pemisah #CCC8A8 di bawah
  */
 import ProductCard from './ProductCard.astro';
-import productHandful from '../../assets/figma/product-handful.png';
-import productBlush from '../../assets/figma/product-blush.png';
-import productSunshine from '../../assets/figma/product-sunshine.png';
-import productLove from '../../assets/figma/product-love.png';
-import productVibrant from '../../assets/figma/product-vibrant.png';
-import productRoseAllure from '../../assets/figma/product-roseallure.png';
-import productEternal from '../../assets/figma/product-eternal.png';
-import productVase from '../../assets/figma/product-vase.png';
-import thumbBlush from '../../assets/figma/thumb-blush.png';
-import thumbSunshine from '../../assets/figma/thumb-sunshine.png';
-import thumbLove from '../../assets/figma/thumb-love.png';
-import thumbLove2 from '../../assets/figma/thumb-love2.png';
-import thumbRoseAllure from '../../assets/figma/thumb-roseallure.png';
-import thumbPetal from '../../assets/figma/thumb-petal.png';
+import { products as catalog, formatPrice } from '../../data/products';
 
-const products = [
-	{
-		image: productHandful,
-		alt: 'A Handful Flower Box — kotak bunga segar ANIA',
-		category: 'Bloom Box',
-		title: 'A Handful Flower Box',
-		price: 'Rp 700,000',
-		priceOld: 'Rp 950,000',
-		badge: 'Sale',
-		standardThumb: productHandful,
-		premiumThumb: thumbBlush,
-	},
-	{
-		image: productBlush,
-		alt: 'Blush Amethyst Orchestra — premium wrapped ANIA',
-		category: 'Premium Wrapped',
-		title: 'Blush Amethyst Orchestra',
-		price: 'Rp 1,250,000',
-		standardThumb: productBlush,
-		premiumThumb: thumbSunshine,
-	},
-	{
-		image: productSunshine,
-		alt: 'Hello Sunshine — premium wrapped ANIA',
-		category: 'Premium Wrapped',
-		title: 'Hello Sunshine',
-		price: 'Rp 1,000,000',
-		badge: 'Sold Out',
-		standardThumb: productSunshine,
-		premiumThumb: thumbLove,
-	},
-	{
-		image: productLove,
-		alt: 'Love Symphony — premium wrapped ANIA',
-		category: 'Premium Wrapped',
-		title: 'Love Symphony',
-		price: 'Rp 950,000',
-		badge: 'Sale',
-		standardThumb: productLove,
-		premiumThumb: thumbLove2,
-	},
-	{
-		image: productVibrant,
-		alt: 'Vibrant Longevity — rangkaian vas ANIA',
-		category: 'Vase',
-		title: 'Vibrant Longevity',
-		price: 'Rp 1,950,000',
-	},
-	{
-		image: productRoseAllure,
-		alt: 'Rose Allure — preserved flower ANIA',
-		category: 'Preserved Flower',
-		title: 'Rose Allure',
-		price: 'Rp 1,250,000',
-		standardThumb: productRoseAllure,
-		premiumThumb: thumbRoseAllure,
-	},
-	{
-		image: productEternal,
-		alt: 'Eternal Grace — standing flower ANIA',
-		category: 'Standing Flower',
-		title: 'Eternal Grace',
-		price: 'Rp 2,050,000',
-		badge: 'Sold Out',
-	},
-	{
-		image: productVase,
-		alt: 'Vase Ceramic Premium Neck Motif — aksesoris ANIA',
-		category: 'Accessories',
-		title: 'Vase Ceramic Premium Neck Motif',
-		price: 'Rp 350,000',
-		standardThumb: thumbPetal,
-		premiumThumb: thumbPetal,
-	},
-];
+/** Siapkan data untuk ProductCard (harga diformat, tambah slug → link detail). */
+const products = catalog.map((p) => ({
+	image: p.image,
+	alt: p.title,
+	category: p.category,
+	title: p.title,
+	price: formatPrice(p.price),
+	priceOld: p.priceOld ? formatPrice(p.priceOld) : undefined,
+	badge: p.badge,
+	standardThumb: p.standardThumb,
+	premiumThumb: p.premiumThumb,
+	slug: p.slug,
+}));
 ---
 
 <section class="bg-[#FDF6F1] py-[50px] lg:py-[70px]">

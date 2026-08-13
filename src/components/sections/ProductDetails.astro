@@ -11,41 +11,42 @@
  */
 import { Image } from 'astro:assets';
 import ProductCard from './ProductCard.astro';
+import { formatPrice } from '../../data/products';
+import type { Product } from '../../data/products';
 
-import productHandful from '../../assets/figma/product-handful.png';
-import productBlush from '../../assets/figma/product-blush.png';
-import productLove from '../../assets/figma/product-love.png';
-import productRoseAllure from '../../assets/figma/product-roseallure.png';
-import thumbBlush from '../../assets/figma/thumb-blush.png';
-import thumbLove from '../../assets/figma/thumb-love.png';
-import thumbLove2 from '../../assets/figma/thumb-love2.png';
-import thumbPetal from '../../assets/figma/thumb-petal.png';
-import thumbRoseAllure from '../../assets/figma/thumb-roseallure.png';
-import thumbSunshine from '../../assets/figma/thumb-sunshine.png';
+interface Props {
+	/** Produk yang sedang ditampilkan */
+	product: Product;
+	/** Produk untuk section "You May Also Like" (biasanya 4 item) */
+	related?: Product[];
+}
+
+const { product, related = [] } = Astro.props;
 
 /** Galeri foto produk — item pertama adalah gambar utama. */
-const gallery = [
-	{ src: productHandful, alt: 'A Handful Flower Box ANIA — standard wrap' },
-	{ src: thumbBlush, alt: 'A Handful Flower Box ANIA — premium wrap' },
-	{ src: thumbPetal, alt: 'A Handful Flower Box ANIA — petal detail' },
-	{ src: thumbLove, alt: 'A Handful Flower Box ANIA — love detail' },
-];
+const gallery = product.gallery;
 
 /** Varian material produk. */
 const materials = [
-	{ id: 'standard', label: 'Standard', thumb: thumbPetal },
-	{ id: 'premium', label: 'Premium', thumb: thumbLove2 },
+	{ id: 'standard', label: 'Standard', thumb: product.standardThumb },
+	{ id: 'premium', label: 'Premium', thumb: product.premiumThumb },
 ];
 
 const cities = ['Jakarta Pusat', 'Jakarta Selatan', 'Jakarta Barat', 'Jakarta Timur', 'Jakarta Utara', 'Tangerang', 'Bekasi', 'Depok', 'Bogor'];
 
 /** Produk rekomendasi — memakai ProductCard agar konsisten dengan halaman lain. */
-const recommendations = [
-	{ image: productHandful, alt: 'A Handful Flower Box ANIA', category: 'Bloom Box', title: 'A Handful Flower Box', price: 'Rp 950,000', badge: 'Sale', standardThumb: productHandful, premiumThumb: thumbBlush },
-	{ image: productBlush, alt: 'Blush Amethyst Orchestra ANIA', category: 'Premium Wrapped', title: 'Blush Amethyst Orchestra', price: 'Rp 1,250,000', standardThumb: productBlush, premiumThumb: thumbSunshine },
-	{ image: productLove, alt: 'Love Symphony ANIA', category: 'Premium Wrapped', title: 'Love Symphony', price: 'Rp 700,000', priceOld: 'Rp 950,000', badge: 'Sale', standardThumb: productLove, premiumThumb: thumbLove2 },
-	{ image: productRoseAllure, alt: 'Rose Allure ANIA', category: 'Preserved Flower', title: 'Rose Allure', price: 'Rp 1,250,000', standardThumb: productRoseAllure, premiumThumb: thumbRoseAllure },
-];
+const recommendations = related.map((r) => ({
+	image: r.image,
+	alt: r.title,
+	category: r.category,
+	title: r.title,
+	price: formatPrice(r.price),
+	priceOld: r.priceOld ? formatPrice(r.priceOld) : undefined,
+	badge: r.badge,
+	standardThumb: r.standardThumb,
+	premiumThumb: r.premiumThumb,
+	slug: r.slug,
+}));
 
 /** Ikon SVG untuk Care Instructions (path tunggal, stroke). */
 const icons = {
@@ -67,7 +68,7 @@ const careItems = [
 ];
 ---
 
-<section class="bg-[#FDF6F1]">
+<section class="bg-[#FDF6F1]" data-product-title={product.title} data-product-price={product.price}>
 	<div class="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-6 lg:px-[70px] lg:py-12">
 		<div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
 			<!-- Kiri: galeri + description -->
@@ -127,9 +128,7 @@ const careItems = [
 				<div class="mt-8">
 					<h2 class="font-['Crimson_Text'] text-xl text-[#3D3B2F]">Description</h2>
 					<div class="mt-3 space-y-4 text-sm leading-relaxed text-[#6D6D6D]">
-						<p>Lorem ipsum dolor sit amet consectetur. Tempus interdum sed dui mi. Libero urna euismod ut tempus eu. Volutpat metus pulvinar ullamcorper mi. Laoreet enim nunc tempor rhoncus ipsum tellus. Commodo praesent non eu commodo mauris egestas arcu sit. Hac in vitae donec ut aliquam ut. Varius dui orci sit vulputate ipsum porttitor dignissim. Proin aliquet parturient a tortor urna. Urna amet imperdiet diam porttitor ullamcorper. Ut non quis sed adipiscing bibendum.</p>
-						<p>Elementum urna magna dictumst amet eleifend risus morbi facilisis. Diam luctus proin amet metus id magna. Risus aliquam arcu at egestas vitae cras. Amet quisque neque morbi in lobortis id urna. Id pharetra quam nulla urna pretium ut. Ut mi dolor porttitor porta. Orci dapibus aliquam justo nullam orci. Dignissim placerat egestas morbi aliquam gravida arcu.</p>
-						<p>Feugiat in penatibus magna at arcu. Lacus interdum diam cursus vestibulum orci. Libero egestas in tellus pellentesque cras augue pulvinar. Interdum sit velit mi odio nulla odio molestie sed ut. Sagittis proin volutpat ullamcorper ante mauris amet. Nunc nunc viverra tellus lobortis.</p>
+						{product.description.map((paragraph) => <p>{paragraph}</p>)}
 					</div>
 				</div>
 			</div>
@@ -138,9 +137,12 @@ const careItems = [
 			<div class="flex flex-col gap-5">
 				<!-- Title & price card -->
 				<div class="rounded-lg border border-[#CCC8A8] bg-white p-6 text-center shadow-[0_1px_3px_rgba(61,59,47,0.06)]">
-					<h1 class="font-['Crimson_Text'] text-2xl text-[#3D3B2F]">A Handful Flower Box</h1>
-					<span class="mt-3 inline-block rounded-full border border-[#EAE8E8] px-4 py-1 text-xs text-[#3D3B2F]">Bloom Box</span>
-					<p class="mt-3 font-['Crimson_Text'] text-xl text-[#3D3B2F]">Rp 950,000</p>
+					<h1 class="font-['Crimson_Text'] text-2xl text-[#3D3B2F]">{product.title}</h1>
+					<span class="mt-3 inline-block rounded-full border border-[#EAE8E8] px-4 py-1 text-xs text-[#3D3B2F]">{product.category}</span>
+					<p class="mt-3 font-['Crimson_Text'] text-xl text-[#3D3B2F]">{formatPrice(product.price)}</p>
+					{product.size && (
+						<p class="mt-1 text-[11px] uppercase tracking-[1.5px] text-[#6D6D6D]">Size: {product.size}</p>
+					)}
 
 					<div class="mt-4 flex items-start justify-center gap-5">
 						{materials.map((m, i) => (
@@ -216,7 +218,7 @@ const careItems = [
 				<!-- CTA -->
 				<div class="flex flex-col gap-3">
 					<button type="button" data-add-to-cart class="flex h-12 w-full items-center justify-center rounded-lg border border-[#3D3B2F] bg-white text-xs font-semibold uppercase tracking-[1px] text-[#3D3B2F] outline-none transition-colors duration-200 hover:bg-[#FDF6F1] focus-visible:ring-2 focus-visible:ring-[#899B7A] focus-visible:ring-offset-2">Add to Cart</button>
-					<button type="button" data-checkout class="flex h-12 w-full items-center justify-center rounded-lg bg-[#BBCCBF] text-xs font-semibold uppercase tracking-[1px] text-white outline-none transition-colors duration-200 hover:bg-[#A8BCAE] focus-visible:ring-2 focus-visible:ring-[#3D3B2F] focus-visible:ring-offset-2">Check Out Now · Rp 1,000,000</button>
+					<button type="button" data-checkout class="flex h-12 w-full items-center justify-center rounded-lg bg-[#BBCCBF] text-xs font-semibold uppercase tracking-[1px] text-white outline-none transition-colors duration-200 hover:bg-[#A8BCAE] focus-visible:ring-2 focus-visible:ring-[#3D3B2F] focus-visible:ring-offset-2">Check Out Now · {formatPrice(product.price)}</button>
 				</div>
 			</div>
 		</div>
@@ -311,7 +313,10 @@ const careItems = [
 
 	// Checkout — buka WhatsApp dengan rangkuman pesanan
 	document.querySelector('[data-checkout]')?.addEventListener('click', () => {
-		const msg = encodeURIComponent('Halo ANIA! Saya ingin checkout:\n\nA Handful Flower Box\nTotal: Rp 1.000.000');
+		const section = document.querySelector('[data-product-title]');
+		const title = section?.getAttribute('data-product-title') || 'Produk ANIA';
+		const price = Number(section?.getAttribute('data-product-price') || '0');
+		const msg = encodeURIComponent(`Halo ANIA! Saya ingin checkout:\n\n${title}\nTotal: Rp ${price.toLocaleString('id-ID')}`);
 		window.open(`https://wa.me/?text=${msg}`, '_blank', 'noopener');
 	});
 </script>
